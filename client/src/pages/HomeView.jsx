@@ -111,7 +111,7 @@ function HomeView() {
         {/* ── Stats Row ───────────────────────────────────────────────────── */}
         <div className="mt-16 flex items-center gap-8">
           {[
-            { label: 'AI Models', value: 'Gemini 2.0' },
+            { label: 'AI Models', value: 'Gemini' },
             { label: 'Content Types', value: '5 Blocks' },
             { label: 'Export Formats', value: 'PDF + Audio' },
           ].map((stat) => (
