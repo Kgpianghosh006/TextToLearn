@@ -1,0 +1,98 @@
+@import "tailwindcss";
+
+/* ═══════════════════════════════════════════════════════════════
+   GLOBAL BASE STYLES — TextToLearn
+   ═══════════════════════════════════════════════════════════════ */
+
+html, body, #root {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+body {
+  font-family: 'Inter', system-ui, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  @apply bg-gray-50 text-gray-900;
+}
+
+/* Class-based dark mode toggled by MainLayout */
+.dark body,
+body.dark-mode {
+  @apply bg-[#0f172a] text-gray-100;
+}
+
+#root {
+  @apply flex flex-col;
+}
+
+/* ── Custom Scrollbar ─────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #374151;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #4b5563;
+}
+
+.light-mode ::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+}
+
+.light-mode ::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* ── Smooth Focus Ring ────────────────────────────────────────── */
+*:focus-visible {
+  outline: 2px solid #6366f1;
+  outline-offset: 2px;
+}
+
+/* ── Theme Toggle Pill ────────────────────────────────────────── */
+.theme-toggle-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  width: 52px;
+  height: 28px;
+  background-color: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 100px;
+  position: relative;
+  padding: 0 7px;
+  transition: background-color 0.2s ease;
+}
+
+.theme-toggle-label .slider {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  background-color: #f1f5f9;
+  border-radius: 50%;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+.dark-mode .theme-toggle-label .slider {
+  transform: translateX(24px);
+}
+
+.light-mode .theme-toggle-label {
+  background-color: #e2e8f0;
+  border-color: #cbd5e1;
+}
