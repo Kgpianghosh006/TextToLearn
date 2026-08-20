@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useOutletContext, useLocation, Link } from 'react-router-dom';
+import { useAuth0 } from '@auth0/auth0-react';
 import CoursePDFExporter from '../components/CoursePDFExporter';
 import LessonRenderer from '../components/blocks/LessonRenderer';
 import LessonPDFExporter from '../components/LessonPDFExporter';
@@ -13,6 +14,7 @@ import apiClient, { generateLessonContent } from '../utils/api';
  */
 function CourseView() {
   const { courseId } = useParams();
+  const { getAccessTokenSilently } = useAuth0();
   const { isDarkMode } = useOutletContext();
   const location = useLocation();
   const dark = isDarkMode;
@@ -66,7 +68,8 @@ function CourseView() {
       if (lessonObj?.content?.length > 0) {
         setSelectedLesson(lessonObj);
       } else {
-        const enrichedLesson = await generateLessonContent(cId, moduleId, lessonId);
+        const token = await getAccessTokenSilently();
+        const enrichedLesson = await generateLessonContent(cId, moduleId, lessonId,token);
         setSelectedLesson(enrichedLesson);
         setCourse(prev => {
           if (!prev) return prev;
