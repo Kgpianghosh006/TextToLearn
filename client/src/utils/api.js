@@ -38,7 +38,7 @@ export const generateCourse = async (topic, token) => {
  * @param {string} lessonId - The MongoDB ObjectId of the lesson.
  * @returns {Promise<object>} The updated Lesson document.
  */
-export const generateLessonContent = async (courseId, moduleId, lessonId) => {
+export const generateLessonContent = async (courseId, moduleId, lessonId, token) => {
   const response = await apiClient.post('/api/lesson/generate', {
     courseId,
     moduleId,
