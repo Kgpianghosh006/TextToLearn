@@ -17,7 +17,7 @@ function LessonAudioPlayer({ lessonId, isDarkMode }) {
     try {
       const token = await getAccessTokenSilently();
       const API_BASE = import.meta.env.VITE_API_URL || '';
-      const response = await fetch('/api/audio/generate', {
+      const response = await fetch('${API_BASE}/api/audio/generate', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
