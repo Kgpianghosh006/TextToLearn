@@ -1,17 +1,13 @@
 import { useState } from 'react';
+import { useAuth0 } from '@auth0/auth0-react';
 
-/**
- * LessonAudioPlayer — Generates and plays a Hinglish audio summary for a lesson.
- *
- * Props:
- *   lessonId: string   — MongoDB ID of the lesson
- *   isDarkMode: boolean
- */
 function LessonAudioPlayer({ lessonId, isDarkMode }) {
   const [isLoading, setIsLoading] = useState(false);
   const [audioUrl, setAudioUrl] = useState(null);
   const [error, setError] = useState(null);
   const dark = isDarkMode;
+
+  const { getAccessTokenSilently } = useAuth0();
 
   const handleGenerateAudio = async () => {
     if (!lessonId) return;
@@ -21,7 +17,10 @@ function LessonAudioPlayer({ lessonId, isDarkMode }) {
     try {
       const response = await fetch('/api/audio/generate', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+         },
         body: JSON.stringify({ lessonId }),
       });
 
