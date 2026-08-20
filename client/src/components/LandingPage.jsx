@@ -1,9 +1,6 @@
 import { useAuth0 } from '@auth0/auth0-react';
 
-/**
- * LandingPage — Shown to unauthenticated users.
- * Professional dark hero with feature grid and CTAs.
- */
+// LandingPage — Shown to unauthenticated users.
 function LandingPage() {
   const { loginWithRedirect } = useAuth0();
 
@@ -48,7 +45,7 @@ function LandingPage() {
   return (
     <div className="min-h-screen bg-[#0f172a] flex flex-col font-sans overflow-y-auto">
 
-      {/* ── Navigation ──────────────────────────────────────────────────────── */}
+      {/*  */}
       <header className="flex items-center justify-between px-6 sm:px-10 py-4 border-b border-slate-800">
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center">
@@ -76,7 +73,7 @@ function LandingPage() {
         </div>
       </header>
 
-      {/* ── Hero ────────────────────────────────────────────────────────────── */}
+      {/*  */}
       <main className="flex-1 flex flex-col items-center">
         <section className="w-full max-w-4xl mx-auto text-center px-6 pt-20 pb-16">
 
@@ -118,7 +115,7 @@ function LandingPage() {
 
         </section>
 
-        {/* ── Feature Grid ────────────────────────────────────────────────────── */}
+        {/*  */}
         <section className="w-full max-w-5xl mx-auto px-6 pb-20">
           <p className="text-center text-[10px] font-bold uppercase tracking-widest text-slate-600 mb-6">
             Everything you need to learn smarter
@@ -142,7 +139,7 @@ function LandingPage() {
         </section>
       </main>
 
-      {/* ── Footer ──────────────────────────────────────────────────────────── */}
+      {/*  */}
       <footer className="text-center py-5 border-t border-slate-800 text-xs text-slate-600">
         © {new Date().getFullYear()} TextToLearn &nbsp;·&nbsp; Built for learning, powered by AI
       </footer>

@@ -13,12 +13,7 @@ const BLOCK_COMPONENTS = {
   mcq: MCQBlock,
 };
 
-/**
- * LessonRenderer — Orchestrates rendering of a lesson's content block array.
- *
- * Props:
- *   content: Array<object> — array of content block objects, each with a `type` field.
- */
+// LessonRenderer — Orchestrates rendering of a lesson's content block array.
 function LessonRenderer({ content }) {
   if (!content || content.length === 0) {
     return (

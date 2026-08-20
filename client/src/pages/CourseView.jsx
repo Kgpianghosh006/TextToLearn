@@ -8,10 +8,7 @@ import LessonAudioPlayer from '../components/LessonAudioPlayer';
 import ErrorMessage from '../components/ui/ErrorMessage';
 import apiClient, { generateLessonContent } from '../utils/api';
 
-/**
- * CourseView — Displays a course workspace and lesson renderer.
- * Route: /courses/:courseId  AND  /courses/:courseId/module/:moduleIndex/lesson/:lessonIndex
- */
+// CourseView — Displays a course workspace and lesson renderer.
 function CourseView() {
   const { courseId } = useParams();
   const { getAccessTokenSilently } = useAuth0();
@@ -91,7 +88,7 @@ function CourseView() {
 
   const selectedModule = course?.modules?.find(m => m.lessons?.some(l => l._id === selectedLesson?._id));
 
-  // ── Loading skeleton ────────────────────────────────────────────────────────
+  // 
   if (isCourseLoading) {
     return (
       <div className={`flex flex-col flex-1 w-full h-full ${dark ? 'bg-[#0f172a]' : 'bg-slate-50'}`}>
@@ -134,7 +131,7 @@ function CourseView() {
   return (
     <div className={`flex flex-col flex-1 h-full w-full ${dark ? 'bg-[#0f172a] text-slate-100' : 'bg-slate-50 text-slate-900'}`}>
 
-      {/* ── Sticky Header ─────────────────────────────────────────────────────── */}
+      {/*  */}
       <div className={`sticky top-0 z-10 flex items-center justify-between px-6 py-3 w-full flex-shrink-0 border-b backdrop-blur-sm ${dark ? 'bg-[#0f172a]/95 border-slate-800' : 'bg-white/95 border-slate-200'} shadow-sm`}>
 
         {/* Breadcrumbs */}
@@ -177,7 +174,7 @@ function CourseView() {
         <CoursePDFExporter course={course} />
       </div>
 
-      {/* ── Body ──────────────────────────────────────────────────────────────── */}
+      {/*  */}
       <div className={`flex-1 flex flex-col overflow-y-auto min-w-0`}>
         {error && (
           <div className="px-8 pt-4">

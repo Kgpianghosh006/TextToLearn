@@ -1,13 +1,4 @@
-/**
- * SidebarNavigation — Enterprise dark-mode sidebar.
- *
- * Props:
- *   course          — Course document with populated modules/lessons
- *   onSelectLesson  — (lessonId, moduleId, courseId) => void
- *   isSidebarOpen   — boolean
- *   isDarkMode      — boolean
- *   onCollapse      — () => void
- */
+// SidebarNavigation — Enterprise dark-mode sidebar.
 function SidebarNavigation({ course, onSelectLesson, isSidebarOpen, isDarkMode, onCollapse }) {
   if (!course) return null;
 

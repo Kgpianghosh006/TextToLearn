@@ -1,7 +1,4 @@
-/**
- * ParagraphBlock — Renders a plain text paragraph with prose styling.
- * Props: block: { type: 'paragraph', text: string }
- */
+// ParagraphBlock — Renders a plain text paragraph with prose styling.
 function ParagraphBlock({ block }) {
   return <p className="block-paragraph">{block.text}</p>;
 }

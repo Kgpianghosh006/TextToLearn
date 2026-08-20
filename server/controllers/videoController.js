@@ -1,15 +1,6 @@
 const { searchYoutubeVideo } = require('../services/youtubeService');
 
-/**
- * GET /api/video/search?query=<search term>
- * Returns the YouTube videoId for the top search result.
- *
- * Responses:
- *   200  { videoId: string }  — top result found
- *   400  { message }          — missing or empty query param
- *   404  { message }          — no results found (service returned null)
- *   500  { message }          — unexpected server error
- */
+// GET /api/video/search?query=<search term>
 const getVideoId = async (req, res) => {
   try {
     const { query } = req.query;

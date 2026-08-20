@@ -16,13 +16,7 @@ const BLOCK_COMPONENTS = {
   mcq: MCQBlock,
 };
 
-/**
- * LessonPDFExporter — Renders a hidden, print-optimized copy of the lesson
- * and captures it with html2canvas to produce a downloadable A4 PDF.
- *
- * Props:
- *   selectedLesson — the full Lesson document object
- */
+// LessonPDFExporter — Renders a hidden, print-optimized copy of the lesson
 function LessonPDFExporter({ selectedLesson }) {
   const [isExporting, setIsExporting] = useState(false);
   const hiddenRef = useRef(null);
@@ -116,17 +110,13 @@ function LessonPDFExporter({ selectedLesson }) {
         heightLeft -= pageHeight;
       }
 
-      // ── Clickable URL hotspot injection ──────────────────────────────────────
+      // 
       // After all pages are built, walk every .pdf-link-target element in the
       // hidden node and draw an invisible jsPDF link box over its exact position.
       // This makes URLs in the exported PDF natively clickable.
-
-      // 1. Establish pixel-to-millimeter conversion ratio
       const pxToMm = pdfWidth / 794;
       const parentRect = hiddenRef.current.getBoundingClientRect();
       const links = hiddenRef.current.querySelectorAll('.pdf-link-target');
-
-      // 2. Iterate through every link to calculate its exact coordinate on the PDF
       links.forEach(link => {
         const linkRect = link.getBoundingClientRect();
         const relativeTop = linkRect.top - parentRect.top;
@@ -168,7 +158,7 @@ function LessonPDFExporter({ selectedLesson }) {
 
   return (
     <>
-      {/* ── Download Button ─────────────────────────────────────────────── */}
+      {/*  */}
       <button
         onClick={handleDownload}
         disabled={isExporting}
@@ -197,7 +187,7 @@ function LessonPDFExporter({ selectedLesson }) {
         )}
       </button>
 
-      {/* ── Hidden Print-Optimized Capture Node ─────────────────────────── */}
+      {/*  */}
       {/* Positioned off-screen so it is never visible to the user.          */}
       {/* Block components receive isExportMode={true} so they render clean  */}
       {/* inline-styled output with no iframes and wrapped code blocks.      */}

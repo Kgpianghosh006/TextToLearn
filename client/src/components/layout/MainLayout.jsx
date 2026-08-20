@@ -56,6 +56,34 @@ function MainLayout() {
     fetchUserCourses();
   }, [fetchUserCourses]);
 
+  // Delete course by ID and update UI
+  const handleDeleteCourse = async (courseId, e) => {
+    e.preventDefault();   // don't trigger the parent <Link> navigation
+    e.stopPropagation();  // stop bubbling to parent elements
+
+    if (!window.confirm('Delete this course? This cannot be undone.')) return;
+
+    try {
+      const token = await getAccessTokenSilently();
+      const API_BASE = import.meta.env.VITE_API_URL || '';
+      const response = await fetch(`${API_BASE}/api/course/${courseId}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (response.ok) {
+        setUserCourses((prev) => prev.filter((c) => c._id !== courseId));
+      } else {
+        const err = await response.json().catch(() => ({}));
+        console.error('[handleDeleteCourse] Server error:', err.message);
+        alert(err.message || 'Failed to delete course.');
+      }
+    } catch (error) {
+      console.error('[handleDeleteCourse] Network error:', error);
+      alert('Network error — could not delete course.');
+    }
+  };
+
   // Auth gates 
   if (isLoading) {
     return (
@@ -162,25 +190,42 @@ function MainLayout() {
                   const isActiveCourse = location.pathname.includes(course._id);
                   return (
                     <div key={course._id} className="flex flex-col">
-                      {/* Course title link */}
-                      <Link
-                        to={`/courses/${course._id}`}
-                        title={course.title}
-                        className={`flex items-center gap-2 px-2 py-2 rounded-md text-sm truncate transition-all duration-150 ${
-                          isActiveCourse
-                            ? dark
-                              ? 'bg-indigo-950 text-indigo-300 font-semibold'
-                              : 'bg-indigo-50 text-indigo-700 font-semibold'
-                            : dark
-                              ? 'text-slate-300 hover:bg-slate-800 hover:text-white'
-                              : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900'
-                        }`}
-                      >
-                        <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                        </svg>
-                        <span className="truncate">{course.title}</span>
-                      </Link>
+                      {/* Course title row — group enables hover-reveal of delete button */}
+                      <div className="group relative flex items-center">
+                        <Link
+                          to={`/courses/${course._id}`}
+                          title={course.title}
+                          className={`flex items-center gap-2 flex-1 min-w-0 px-2 py-2 rounded-md text-sm truncate transition-all duration-150 ${
+                            isActiveCourse
+                              ? dark
+                                ? 'bg-indigo-950 text-indigo-300 font-semibold'
+                                : 'bg-indigo-50 text-indigo-700 font-semibold'
+                              : dark
+                                ? 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                                : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900'
+                          }`}
+                        >
+                          <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                          </svg>
+                          <span className="truncate">{course.title}</span>
+                        </Link>
+                        {/* Delete button — only visible on row hover */}
+                        <button
+                          onClick={(e) => handleDeleteCourse(course._id, e)}
+                          title="Delete course"
+                          aria-label={`Delete ${course.title}`}
+                          className={`opacity-0 group-hover:opacity-100 flex-shrink-0 p-1 mr-1 rounded transition-all duration-150 ${
+                            dark
+                              ? 'text-slate-600 hover:text-red-400 hover:bg-red-950/50'
+                              : 'text-slate-400 hover:text-red-500 hover:bg-red-50'
+                          }`}
+                        >
+                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        </button>
+                      </div>
 
                       {/* Nested modules + lessons */}
                       {isActiveCourse && course.modules && (
@@ -266,7 +311,7 @@ function MainLayout() {
           </div>
         </aside>
 
-        {/* ── Main Content (Outlet) ─────────────────────────────────────────── */}
+        {/*  */}
         <main className={`flex-1 w-full overflow-y-auto min-w-0 ${dark ? 'bg-[#0f172a]' : 'bg-slate-50'}`}>
           <div className="h-full">
             <Outlet context={{ isDarkMode, setIsDarkMode, isSidebarOpen, setIsSidebarOpen, fetchUserCourses }} />

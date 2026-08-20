@@ -50,11 +50,7 @@ const lessonContentSchema = z.object({
 // Service Functions
 // ---------------------------------------------------------------------------
 
-/**
- * Generates a structured course outline for a given topic using Gemini AI.
- * @param {string} topic - The subject or topic for the course.
- * @returns {Promise<object>} Parsed JSON matching courseOutlineSchema.
- */
+// Generates a structured course outline for a given topic using Gemini AI.
 async function generateCourseOutline(topic) {
   const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
@@ -79,19 +75,13 @@ async function generateCourseOutline(topic) {
   }
 }
 
-/**
- * Generates rich, structured lesson content using Gemini AI.
- * @param {string} courseTitle - The title of the parent course.
- * @param {string} moduleTitle - The title of the parent module.
- * @param {string} lessonTitle - The title of the lesson to generate.
- * @returns {Promise<object>} Parsed JSON matching lessonContentSchema.
- */
+// Generates rich, structured lesson content using Gemini AI.
 async function generateLessonContent(courseTitle, moduleTitle, lessonTitle) {
   const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-3.1-flash-lite',
+      model: 'gemini-3.5-flash-lite',
       contents:
         `Generate rich, detailed educational lesson content for the following:\n` +
         `Course: "${courseTitle}"\n` +
@@ -124,12 +114,7 @@ async function generateLessonContent(courseTitle, moduleTitle, lessonTitle) {
 }
 
 
-/**
- * Generates a short, conversational Hinglish audio script from lesson text.
- * Hinglish = Hindi language written in the English alphabet, blended with English technical terms.
- * @param {string} lessonText - The concatenated plain-text content of a lesson.
- * @returns {Promise<string>} A 3-4 sentence Hinglish script ready for TTS.
- */
+// Generates a short, conversational Hinglish audio script from lesson text.
 async function generateHinglishScript(lessonText) {
   const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 

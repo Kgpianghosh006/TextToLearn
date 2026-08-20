@@ -1,7 +1,4 @@
-/**
- * HeadingBlock — Renders a heading at the specified level (h1–h3).
- * Props: block: { type: 'heading', text: string, level: number }
- */
+// HeadingBlock — Renders a heading at the specified level (h1–h3).
 function HeadingBlock({ block }) {
   const { text, level } = block;
   const Tag = `h${level >= 1 && level <= 3 ? level : 2}`;

@@ -4,19 +4,7 @@ const Lesson = require('../models/Lesson');
 const { generateHinglishScript } = require('../services/aiService');
 const { generateAudioBuffer } = require('../services/audioService');
 
-/**
- * Extracts all readable plain-text from a lesson's structured content array.
- * Concatenates: lesson title, objectives, and text from each content block.
- *
- * Block types handled:
- *   heading / paragraph  → block.text
- *   code                 → block.code  (language label prepended)
- *   video                → block.query (search query as description)
- *   mcq                  → block.question + block.options + block.answer
- *
- * @param {object} lesson - A Mongoose Lesson document.
- * @returns {string} A single plain-text string of the entire lesson.
- */
+// Extracts all readable plain-text from a lesson's structured content array.
 function extractLessonText(lesson) {
   const parts = [];
 
@@ -58,19 +46,7 @@ function extractLessonText(lesson) {
   return parts.join('\n\n');
 }
 
-/**
- * POST /api/audio/generate
- * Generates a Hinglish audio summary of a lesson and returns raw MP3 bytes.
- *
- * Request body: { lessonId: string }
- * Response:     Binary audio buffer with Content-Type: audio/wav
- *
- * Responses:
- *   200  Binary buffer — audio file bytes
- *   400  { message }  — lessonId missing
- *   404  { message }  — lesson not found
- *   500  { message }  — unexpected server error
- */
+// POST /api/audio/generate
 const getLessonAudio = async (req, res) => {
   try {
     const { lessonId } = req.body;

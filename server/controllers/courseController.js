@@ -4,21 +4,15 @@ const Module = require('../models/Module');
 const Lesson = require('../models/Lesson');
 const { generateCourseOutline, generateLessonContent } = require('../services/aiService');
 
-/** Pause helper — used to throttle sequential Gemini API calls. */
+// Pause helper — used to throttle sequential Gemini API calls.
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-/**
- * POST /api/course/generate
- * Generates a full course outline via AI and persists all documents to MongoDB.
- * Body: { topic: string, creatorId: string }
- */
+// POST /api/course/generate
 const generateAndSaveCourse = async (req, res) => {
   try {
     const { topic, creatorId } = req.body;
 
-    // Prefer the verified JWT subject (set by checkJwt middleware) so the creator
-    // is always the authenticated Auth0 user. Fall back to body.creatorId for
-    // legacy / unauthenticated dev-mode calls.
+    // Resolve creator ID
     const resolvedCreatorId = req.auth?.payload?.sub || creatorId;
     console.log('[generateAndSaveCourse] Resolved creator ID:', resolvedCreatorId);
 
@@ -26,10 +20,17 @@ const generateAndSaveCourse = async (req, res) => {
       return res.status(400).json({ message: 'topic and creatorId are required.' });
     }
 
-    // 1. Generate the course outline from the AI service
-    const outline = await generateCourseOutline(topic);
+    // Deduplication check
+    const existingCourse = await Course.findOne({
+      creator: resolvedCreatorId,
+      title: { $regex: new RegExp(`^${topic.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') },
+    }).populate({ path: 'modules', populate: { path: 'lessons' } });
 
-    // 2. Create the Course document (modules will be linked after they are created)
+    if (existingCourse) {
+      console.log('[generateAndSaveCourse] Duplicate detected — returning cached course:', existingCourse._id);
+      return res.status(200).json(existingCourse);
+    }
+    const outline = await generateCourseOutline(topic);
     const course = new Course({
       title: outline.title,
       description: outline.description,
@@ -38,14 +39,10 @@ const generateAndSaveCourse = async (req, res) => {
       modules: [],
     });
     await course.save();
-
-    // 3. Iterate through AI-returned modules and create Module + Lesson documents
     const moduleIds = [];
 
     for (const moduleData of outline.modules) {
-      // 3a. Create all Lesson documents for this module first (need module._id)
-      //     We create a temporary module ID upfront using a new ObjectId so lessons
-      //     can be linked before the module document is saved.
+
       const tempModuleId = new mongoose.Types.ObjectId();
       const lessonIds = [];
 
@@ -62,8 +59,6 @@ const generateAndSaveCourse = async (req, res) => {
         await lesson.save();
         lessonIds.push(lesson._id);
       }
-
-      // 3b. Create the Module document using the pre-assigned tempModuleId
       const module = new Module({
         _id: tempModuleId,
         title: moduleData.title,
@@ -74,12 +69,8 @@ const generateAndSaveCourse = async (req, res) => {
       await module.save();
       moduleIds.push(module._id);
     }
-
-    // 4. Update the Course document with the collected Module ObjectIds
     course.modules = moduleIds;
     await course.save();
-
-    // 5. Return the saved course deeply populated: modules + their lessons
     const savedCourse = await Course.findById(course._id).populate({
       path: 'modules',
       populate: { path: 'lessons' },
@@ -92,11 +83,7 @@ const generateAndSaveCourse = async (req, res) => {
   }
 };
 
-/**
- * POST /api/lesson/generate
- * Fetches an existing Lesson, generates rich content via AI, and updates the document.
- * Body: { courseId: string, moduleId: string, lessonId: string }
- */
+// POST /api/lesson/generate
 const generateAndSaveLessonContent = async (req, res) => {
   try {
     const { courseId, moduleId, lessonId } = req.body;
@@ -104,8 +91,6 @@ const generateAndSaveLessonContent = async (req, res) => {
     if (!courseId || !moduleId || !lessonId) {
       return res.status(400).json({ message: 'courseId, moduleId, and lessonId are required.' });
     }
-
-    // 1. Fetch all three documents to retrieve their titles
     const [course, module, lesson] = await Promise.all([
       Course.findById(courseId),
       Module.findById(moduleId),
@@ -121,11 +106,7 @@ const generateAndSaveLessonContent = async (req, res) => {
     if (lesson.isEnriched === true) {
       return res.status(200).json(lesson);
     }
-
-    // 2. Generate lesson content via the AI service
     const generated = await generateLessonContent(course.title, module.title, lesson.title);
-
-    // 3. Update the Lesson document with generated content
     const updatedLesson = await Lesson.findByIdAndUpdate(
       lessonId,
       {
@@ -143,12 +124,7 @@ const generateAndSaveLessonContent = async (req, res) => {
   }
 };
 
-/**
- * GET /api/courses/:id/export
- * Returns a fully populated Course document — modules with their lessons
- * fully embedded (including content, objectives, etc.) — for PDF export.
- * Path param: id — Course ObjectId
- */
+// GET /api/courses/:id/export
 const getFullCourseForExport = async (req, res) => {
   try {
     const course = await Course.findById(req.params.id).populate({
@@ -167,15 +143,9 @@ const getFullCourseForExport = async (req, res) => {
   }
 };
 
-/**
- * POST /api/courses/:id/publish
- * Sequentially enriches every unenriched lesson in the course by calling the AI
- * service lesson-by-lesson to avoid Gemini API rate-limit errors.
- * Path param: id — Course ObjectId
- */
+// POST /api/courses/:id/publish
 const batchEnrichCourse = async (req, res) => {
   try {
-    // 1. Fully populate the course: modules → lessons
     const course = await Course.findById(req.params.id).populate({
       path: 'modules',
       populate: { path: 'lessons' },
@@ -187,8 +157,6 @@ const batchEnrichCourse = async (req, res) => {
 
     let enrichedCount = 0;
     let skippedCount = 0;
-
-    // 2. Iterate sequentially — for...of prevents parallel Gemini API hammering
     for (const module of course.modules) {
       for (const lesson of module.lessons) {
         // Skip already-enriched lessons to avoid redundant AI calls
@@ -200,11 +168,7 @@ const batchEnrichCourse = async (req, res) => {
         console.log(`[batchEnrich] Enriching lesson: "${lesson.title}" (module: "${module.title}")`);
 
         try {
-          // 3a. Generate content — wrapped in its own try/catch so one failure
-          //     doesn't abort the entire batch.
           const generated = await generateLessonContent(course.title, module.title, lesson.title);
-
-          // 3b. Persist the enriched lesson back to MongoDB
           await Lesson.findByIdAndUpdate(
             lesson._id,
             {
@@ -216,9 +180,6 @@ const batchEnrichCourse = async (req, res) => {
           );
 
           enrichedCount++;
-
-          // 3c. Throttle — 4-second pause after each successful call to stay within
-          //     Gemini's Requests Per Minute limit.
           await sleep(4000);
         } catch (lessonErr) {
           // Log and skip — do NOT re-throw; the loop continues to the next lesson.
@@ -240,15 +201,7 @@ const batchEnrichCourse = async (req, res) => {
   }
 };
 
-/**
- * GET /api/user/courses  (protected — requires checkJwt middleware on the route)
- *
- * Returns a list of courses created by the authenticated user, with their
- * modules and lessons populated for sidebar history rendering.
- *
- * The authenticated user's Auth0 sub is read from `req.auth.payload.sub`,
- * which is set by the `express-oauth2-jwt-bearer` `auth()` middleware.
- */
+// GET /api/user/courses  (protected — requires checkJwt middleware on the route)
 const getUserCourses = async (req, res) => {
   try {
     const creatorId = req.auth?.payload?.sub;
@@ -256,8 +209,7 @@ const getUserCourses = async (req, res) => {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    // Fetch the user's courses, populating modules and their lessons so the
-    // sidebar history tree can render the full nested module → lesson structure.
+    // Fetch user courses
     console.log('[getUserCourses] Querying courses for creator ID:', creatorId);
     const courses = await Course.find({ creator: creatorId })
       .populate({
@@ -275,11 +227,51 @@ const getUserCourses = async (req, res) => {
   }
 };
 
+// DELETE /api/course/:id  (protected — requires checkJwt)
+const deleteCourse = async (req, res) => {
+  try {
+    const creatorId = req.auth?.payload?.sub;
+    if (!creatorId) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
+
+    const course = await Course.findById(req.params.id).populate('modules');
+    if (!course) {
+      return res.status(404).json({ message: 'Course not found.' });
+    }
+
+    // Ownership check — only the creator may delete their own course
+    if (course.creator !== creatorId) {
+      return res.status(403).json({ message: 'Forbidden: you do not own this course.' });
+    }
+
+    // Cascade: collect all lesson IDs across every module
+    const lessonIds = course.modules.flatMap((m) => m.lessons ?? []);
+
+    // Delete in order: lessons → modules → course
+    if (lessonIds.length > 0) {
+      await Lesson.deleteMany({ _id: { $in: lessonIds } });
+    }
+    if (course.modules.length > 0) {
+      await Module.deleteMany({ _id: { $in: course.modules.map((m) => m._id) } });
+    }
+    await Course.findByIdAndDelete(req.params.id);
+
+    console.log(`[deleteCourse] Deleted course ${req.params.id} and all its children.`);
+    return res.status(200).json({ message: 'Course deleted successfully.' });
+  } catch (error) {
+    console.error('[courseController] deleteCourse failed:', error.message);
+    return res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   generateAndSaveCourse,
   generateAndSaveLessonContent,
   getFullCourseForExport,
   batchEnrichCourse,
   getUserCourses,
+  deleteCourse,
 };
+
 

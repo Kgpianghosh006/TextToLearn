@@ -1,12 +1,6 @@
 import { useState } from 'react';
 
-/**
- * MCQBlock — Interactive multiple-choice question with animated feedback.
- *
- * Props:
- *   block:        { type: 'mcq', question: string, options: string[], answer: string }
- *   isExportMode: boolean — when true, renders a static print layout
- */
+// MCQBlock — Interactive multiple-choice question with animated feedback.
 function MCQBlock({ block, isExportMode = false }) {
   const { question, options, answer } = block;
   const [selected, setSelected] = useState(null);
@@ -16,7 +10,7 @@ function MCQBlock({ block, isExportMode = false }) {
     setSelected(option);
   };
 
-  // ── Export mode ─────────────────────────────────────────────────────────────
+  // 
   if (isExportMode) {
     return (
       <div style={{
@@ -39,7 +33,7 @@ function MCQBlock({ block, isExportMode = false }) {
     );
   }
 
-  // ── Interactive render ─────────────────────────────────────────────────────
+  // 
   const getOptionStyle = (option) => {
     const base = 'w-full text-left px-4 py-3 rounded-lg border text-sm transition-all duration-200 cursor-pointer flex items-center gap-3';
     if (selected === null) {

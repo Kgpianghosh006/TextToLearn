@@ -1,14 +1,8 @@
-/**
- * CodeBlock — Renders a VS Code-style code block with a language badge.
- *
- * Props:
- *   block:        { type: 'code', language: string, code: string }
- *   isExportMode: boolean — when true, renders with inline styles for PDF capture
- */
+// CodeBlock — Renders a VS Code-style code block with a language badge.
 function CodeBlock({ block, isExportMode = false }) {
   const { language, code } = block;
 
-  // ── Export mode: inline-styled for html2canvas PDF capture ─────────────────
+  // 
   if (isExportMode) {
     return (
       <div style={{ margin: '0' }}>
@@ -48,7 +42,7 @@ function CodeBlock({ block, isExportMode = false }) {
     );
   }
 
-  // ── Normal interactive render ───────────────────────────────────────────────
+  // 
   return (
     <div className="my-4 rounded-xl overflow-hidden border border-slate-700/50 shadow-lg shadow-black/20">
       {/* Header bar */}

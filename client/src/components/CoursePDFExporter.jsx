@@ -16,34 +16,13 @@ const BLOCK_COMPONENTS = {
   mcq: MCQBlock,
 };
 
-/**
- * CoursePDFExporter — Fetches a fully-populated course JIT, renders it in a
- * hidden DOM node, then captures it with html2canvas to produce a multi-page
- * downloadable A4 PDF.
- *
- * Architecture (in order of execution):
- *   1. Button click → fetch deeply populated course from /api/courses/:id/export
- *   2. setFullCourseData(fetchedCourse) → triggers re-render of hidden DOM node
- *   3. useEffect([fullCourseData]) → 500ms setTimeout → PDF engine runs
- *   4. finally → reset state
- *
- * PDF engine is identical to LessonPDFExporter:
- *   - JIT YouTube URL swap from videoIdCache before capture.
- *   - getBoundingClientRect() spacer injection to prevent guillotine clipping.
- *   - Multi-page jsPDF pagination via canvas slicing.
- *   - Invisible clickable hotspot injection via pdf.link().
- *
- * Props:
- *   course — the shallow Course object (only needs _id and title for fetch/filename)
- */
+// CoursePDFExporter — Fetches a fully-populated course and renders it to PDF
 function CoursePDFExporter({ course }) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [fullCourseData, setFullCourseData] = useState(null);
   const hiddenRef = useRef(null);
 
   if (!course || !course._id) return null;
-
-  // ── Smart Download: publish → export → PDF ──────────────────────────────────
   const handleExportClick = async () => {
     if (isGenerating) return;
     setIsGenerating(true);
@@ -82,7 +61,7 @@ function CoursePDFExporter({ course }) {
     }
   };
 
-  // ── PDF engine: fires after fullCourseData causes hidden DOM to render ──────
+  // 
   useEffect(() => {
     if (!fullCourseData) return;
 
@@ -213,7 +192,7 @@ function CoursePDFExporter({ course }) {
 
   return (
     <>
-      {/* ── Download Button ─────────────────────────────────────────────── */}
+      {/*  */}
       <button
         onClick={handleExportClick}
         disabled={isGenerating}
@@ -242,7 +221,7 @@ function CoursePDFExporter({ course }) {
         )}
       </button>
 
-      {/* ── Hidden Print-Optimized Capture Node ─────────────────────────── */}
+      {/*  */}
       {/* Only rendered when fullCourseData is populated (after JIT fetch). */}
       {/* Block components receive isExportMode={true} for clean output.   */}
       <div

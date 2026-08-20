@@ -1,10 +1,4 @@
-/**
- * ErrorMessage — Dismissable error alert banner.
- * Props:
- *   message: string      — the error text
- *   onDismiss?: () => void — optional dismiss callback
- *   compact?: boolean    — renders as inline pill instead of full-width banner
- */
+// ErrorMessage — Dismissable error alert banner.
 function ErrorMessage({ message, onDismiss, compact = false }) {
   if (!message) return null;
 

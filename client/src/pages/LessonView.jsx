@@ -1,12 +1,6 @@
 import { useParams, useOutletContext } from 'react-router-dom';
 
-/**
- * LessonView — Displays a specific lesson inside a course.
- * Route: /courses/:courseId/module/:moduleIndex/lesson/:lessonIndex
- *
- * NOTE: Full lesson content fetching will be wired in a future milestone.
- * Currently renders params to confirm routing is functional.
- */
+// LessonView — Displays a specific lesson inside a course.
 function LessonView() {
   const { courseId, moduleIndex, lessonIndex } = useParams();
   const { isDarkMode } = useOutletContext();

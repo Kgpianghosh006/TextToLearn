@@ -5,15 +5,7 @@ import { useState, useEffect } from 'react';
 // mode can render the exact watch URL without firing an async fetch.
 export const videoIdCache = {};
 
-/**
- * VideoBlock — Fetches a YouTube videoId from the backend and renders an iframe embed.
- * Falls back to a YouTube search anchor link if the fetch fails or returns no result.
- *
- * Props:
- *   block:        { type: 'video', query: string }
- *   isExportMode: boolean (default false) — when true, skips the API fetch and iframe
- *                 entirely; renders only the plain fallback anchor for PDF capture
- */
+// VideoBlock — Fetches a YouTube videoId from the backend and renders an iframe embed.
 function VideoBlock({ block, isExportMode = false }) {
   const [videoId, setVideoId] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -55,12 +47,12 @@ function VideoBlock({ block, isExportMode = false }) {
       });
   }, [block.query, isExportMode]);
 
-  // ── Fallback anchor URL (used in all states) ───────────────────────────────
+  // 
   const searchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(
     block.query
   )}`;
 
-  // ── Export mode: inline-styled, no classNames, prints resolved watch URL ────
+  // 
   if (isExportMode) {
     // Check cache for the resolved videoId fetched during the live session
     const cachedId = videoIdCache[block.query];
@@ -112,7 +104,7 @@ function VideoBlock({ block, isExportMode = false }) {
     );
   }
 
-  // ── Loading state ──────────────────────────────────────────────────────────
+  // 
   if (isLoading) {
     return (
       <div className="block-video">
@@ -125,7 +117,7 @@ function VideoBlock({ block, isExportMode = false }) {
     );
   }
 
-  // ── Embed state ────────────────────────────────────────────────────────────
+  // 
   if (videoId) {
     return (
       <div className="block-video block-video--embed">
@@ -154,7 +146,7 @@ function VideoBlock({ block, isExportMode = false }) {
     );
   }
 
-  // ── Fallback anchor state ──────────────────────────────────────────────────
+  // 
   return (
     <div className="block-video">
       <div className="block-video__icon" aria-hidden="true">▶</div>

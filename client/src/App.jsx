@@ -4,14 +4,7 @@ import HomeView from './pages/HomeView';
 import CourseView from './pages/CourseView';
 import './App.css';
 
-/**
- * App — Route tree root.
- * 
- * Route structure:
- *   /                                                        → HomeView (landing + course workspace)
- *   /courses/:courseId                                       → CourseView
- *   /courses/:courseId/module/:moduleIndex/lesson/:lessonIndex → LessonView
- */
+// App — Route tree root.
 function App() {
   return (
     <Routes>

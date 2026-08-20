@@ -1,16 +1,8 @@
-/**
- * youtubeService.js
- * Provides a search helper that queries the YouTube Data API v3
- * and returns the videoId of the top result.
- */
+// youtubeService.js
 
 const YOUTUBE_SEARCH_URL = 'https://www.googleapis.com/youtube/v3/search';
 
-/**
- * Searches YouTube for the given query and returns the top video's ID.
- * @param {string} query - The search query string.
- * @returns {Promise<string|null>} The videoId of the top result, or null on failure.
- */
+// Searches YouTube for the given query and returns the top video's ID.
 async function searchYoutubeVideo(query) {
   try {
     const params = new URLSearchParams({

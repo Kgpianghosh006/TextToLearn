@@ -1,9 +1,4 @@
-/**
- * LoadingSpinner — Centered spinner with label.
- * Props:
- *   message?: string   — label text (default: "Loading…")
- *   fullPage?: boolean — if true, takes up full screen height
- */
+// LoadingSpinner — Centered spinner with label.
 function LoadingSpinner({ message = 'Loading…', fullPage = false }) {
   return (
     <div

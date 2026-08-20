@@ -2,15 +2,7 @@
 
 const googleTTS = require('google-tts-api');
 
-/**
- * Converts a text string to a raw audio buffer using Google Translate TTS.
- * Uses getAllAudioBase64() which automatically splits text exceeding the
- * 200-character API limit into multiple sequential requests, then
- * concatenates all returned base64 chunks into a single Buffer.
- *
- * @param {string} text - The text to synthesize (may exceed 200 characters).
- * @returns {Promise<Buffer>} A single concatenated audio buffer (MP3 bytes).
- */
+// Converts a text string to a raw audio buffer using Google Translate TTS.
 async function generateAudioBuffer(text) {
   try {
     // getAllAudioBase64 handles long text by chunking it automatically

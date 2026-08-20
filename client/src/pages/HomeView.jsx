@@ -15,9 +15,7 @@ const EXAMPLE_TOPICS = [
   'Digital Marketing 101',
 ];
 
-/**
- * HomeView — Authenticated user landing page with course creation prompt.
- */
+// HomeView — Authenticated user landing page with course creation prompt.
 function HomeView() {
   const { isDarkMode, fetchUserCourses } = useOutletContext();
   const navigate = useNavigate();
@@ -65,7 +63,7 @@ function HomeView() {
         </div>
       )}
 
-      {/* ── Hero Section ───────────────────────────────────────────────────── */}
+      {/*  */}
       <div className="flex flex-col items-center justify-center flex-1 px-4 py-16 max-w-3xl mx-auto w-full">
 
         {/* Greeting */}
@@ -85,12 +83,12 @@ function HomeView() {
           interactive quizzes, videos, and audio summaries.
         </p>
 
-        {/* ── Search Form ─────────────────────────────────────────────────── */}
+        {/*  */}
         <div className="w-full">
           <PromptForm onSubmit={handleCourseSubmit} isLoading={isCourseLoading} />
         </div>
 
-        {/* ── Example Topic Chips ─────────────────────────────────────────── */}
+        {/*  */}
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           {EXAMPLE_TOPICS.map((topic) => (
             <button
@@ -108,10 +106,10 @@ function HomeView() {
           ))}
         </div>
 
-        {/* ── Stats Row ───────────────────────────────────────────────────── */}
+        {/*  */}
         <div className="mt-16 flex items-center gap-8">
           {[
-            { label: 'AI Model', value: 'Gemini-3.1-flash-lite' },
+            { label: 'AI Model', value: 'Gemini 3.5 Flash Lite' },
             { label: 'Content Types', value: '5 Blocks' },
             { label: 'Export Formats', value: 'PDF + Audio' },
           ].map((stat) => (
