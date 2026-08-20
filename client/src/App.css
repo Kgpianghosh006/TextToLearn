@@ -3,17 +3,15 @@
    All interactive UI uses Tailwind classes directly on components.
    ========================================================================== */
 
-/* ── Spin keyframe (used by PDF exporters) ─────────────────────────────── */
+/* Spin keyframe (used by PDF exporters) */
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
 
-/* ── PDF Export Compatibility ─────────────────────────────────────────────
+/* 
    The PDF exporters use html2canvas which can't capture CSS classes injected
-   by JS at render time, so we keep these static class rules for the capture.
-   ─────────────────────────────────────────────────────────────────────── */
+   by JS at render time, so we keep these static class rules for the capture. */
 
-/* Fix code block overflow so content wraps in PDF */
 .pdf-export-mode pre,
 .pdf-export-mode code {
   white-space: pre-wrap !important;

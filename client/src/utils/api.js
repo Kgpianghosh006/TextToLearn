@@ -43,6 +43,10 @@ export const generateLessonContent = async (courseId, moduleId, lessonId) => {
     courseId,
     moduleId,
     lessonId,
+  }, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
   });
   return response.data;
 };

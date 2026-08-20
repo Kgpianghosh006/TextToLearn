@@ -6,10 +6,7 @@ import './App.css';
 
 /**
  * App — Route tree root.
- *
- * All application state and UI logic lives in the page views (HomeView, etc.).
- * MainLayout provides the persistent topbar (Auth0) and sidebar shell via <Outlet />.
- *
+ * 
  * Route structure:
  *   /                                                        → HomeView (landing + course workspace)
  *   /courses/:courseId                                       → CourseView

@@ -4,20 +4,6 @@ import { useAuth0 } from '@auth0/auth0-react';
 import LoadingSpinner from '../ui/LoadingSpinner';
 import LandingPage from '../LandingPage';
 
-/**
- * MainLayout — Persistent enterprise shell wrapping every route via <Outlet />.
- *
- * Architecture:
- *   ┌─────────────────────────────────────────────────────┐
- *   │ Topbar: Logo | sidebar toggle          theme toggle │
- *   ├──────────────┬──────────────────────────────────────┤
- *   │ Sidebar      │  <Outlet /> (page content)           │
- *   │  + New Search│                                      │
- *   │  HISTORY     │                                      │
- *   │  (courses)   │                                      │
- *   │  [user] ──── │                                      │
- *   └──────────────┴──────────────────────────────────────┘
- */
 function MainLayout() {
   const {
     logout,
@@ -52,7 +38,8 @@ function MainLayout() {
     if (isAuthenticated) {
       try {
         const token = await getAccessTokenSilently();
-        const response = await fetch('/api/user/courses', {
+        const API_BASE = import.meta.env.VITE_API_URL || '';
+        const response = await fetch(`${API_BASE}/api/user/courses`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (response.ok) {
@@ -69,7 +56,7 @@ function MainLayout() {
     fetchUserCourses();
   }, [fetchUserCourses]);
 
-  // ── Auth gates ─────────────────────────────────────────────────────────────
+  // Auth gates 
   if (isLoading) {
     return (
       <div className="min-h-screen bg-[#0f172a] flex items-center justify-center">
@@ -83,9 +70,9 @@ function MainLayout() {
   }
 
   return (
-    <div className={`flex flex-col h-screen w-screen overflow-hidden transition-colors duration-300 ${dark ? 'bg-[#0f172a] text-gray-100' : 'bg-slate-50 text-gray-900'}`}>
+    <div className={`flex flex-col h-[100dvh] w-screen overflow-hidden transition-colors duration-300 ${dark ? 'bg-[#0f172a] text-gray-100' : 'bg-slate-50 text-gray-900'}`}>
 
-      {/* ── Topbar ───────────────────────────────────────────────────────────── */}
+      {/*Topbar*/}
       <nav className={`flex items-center justify-between px-4 py-3 flex-shrink-0 border-b transition-colors duration-300 ${dark ? 'bg-[#0f172a] border-slate-800' : 'bg-white border-slate-200'} shadow-sm`}>
 
         {/* Left: sidebar toggle + logo */}
@@ -132,12 +119,12 @@ function MainLayout() {
         </div>
       </nav>
 
-      {/* ── Body: Sidebar + Content ──────────────────────────────────────────── */}
+      {/*  Body: Sidebar + Content */}
       <div className="flex flex-1 overflow-hidden relative">
 
 
 
-        {/* ── Unified Sidebar ────────────────────────────────────────────────── */}
+        {/* Unified Sidebar*/}
         <aside
           className={`flex flex-col border-r h-full transition-all duration-300 overflow-hidden flex-shrink-0 ${dark ? 'bg-[#0f1929] border-slate-800' : 'bg-white border-slate-200'} ${isSidebarOpen ? 'w-64' : 'w-0'}`}
         >

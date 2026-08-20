@@ -1,11 +1,6 @@
 import { useState } from 'react';
 
-/**
- * PromptForm — Hero-style course creation search input.
- * Props:
- *   onSubmit(topic: string) — called with trimmed topic string
- *   isLoading: boolean     — disables form and shows spinner
- */
+
 function PromptForm({ onSubmit, isLoading }) {
   const [topic, setTopic] = useState('');
 

@@ -1,8 +1,6 @@
 @import "tailwindcss";
 
-/* ═══════════════════════════════════════════════════════════════
-   GLOBAL BASE STYLES — TextToLearn
-   ═══════════════════════════════════════════════════════════════ */
+/* GLOBAL BASE STYLES — TextToLearn */
 
 html, body, #root {
   height: 100vh;
@@ -27,7 +25,7 @@ body.dark-mode {
   @apply flex flex-col;
 }
 
-/* ── Custom Scrollbar ─────────────────────────────────────────── */
+/* Custom Scrollbar*/
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -54,13 +52,13 @@ body.dark-mode {
   background: #9ca3af;
 }
 
-/* ── Smooth Focus Ring ────────────────────────────────────────── */
+/*Smooth Focus Ring*/
 *:focus-visible {
   outline: 2px solid #6366f1;
   outline-offset: 2px;
 }
 
-/* ── Theme Toggle Pill ────────────────────────────────────────── */
+/*Theme Toggle Pill*/
 .theme-toggle-label {
   display: flex;
   align-items: center;
