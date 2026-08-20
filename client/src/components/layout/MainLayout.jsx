@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Outlet, useLocation, Link } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate, Link } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import LoadingSpinner from '../ui/LoadingSpinner';
 import LandingPage from '../LandingPage';
@@ -16,6 +16,7 @@ function MainLayout() {
   const [userCourses, setUserCourses] = useState([]);
 
   const location = useLocation();
+  const navigate = useNavigate();
   const dark = isDarkMode;
 
   // Sync dark mode with <html> and body classes
@@ -58,29 +59,34 @@ function MainLayout() {
 
   // Delete course by ID and update UI
   const handleDeleteCourse = async (courseId, e) => {
-    e.preventDefault();   // don't trigger the parent <Link> navigation
-    e.stopPropagation();  // stop bubbling to parent elements
+    // CRITICAL: Stop the click from bubbling up and triggering the sidebar link
+    e.preventDefault();
+    e.stopPropagation(); 
 
-    if (!window.confirm('Delete this course? This cannot be undone.')) return;
+    if (!window.confirm('Are you sure you want to delete this course?')) return;
 
     try {
       const token = await getAccessTokenSilently();
       const API_BASE = import.meta.env.VITE_API_URL || '';
+
       const response = await fetch(`${API_BASE}/api/course/${courseId}`, {
         method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization: `Bearer ${token}` }
       });
 
       if (response.ok) {
-        setUserCourses((prev) => prev.filter((c) => c._id !== courseId));
+        // 1. Instantly wipe the ghost from the sidebar UI
+        setUserCourses(prev => prev.filter(c => c._id !== courseId));
+
+        // 2. If the user is currently staring at the deleted course, kick them to the home page
+        if (window.location.pathname.includes(courseId)) {
+          navigate('/');
+        }
       } else {
-        const err = await response.json().catch(() => ({}));
-        console.error('[handleDeleteCourse] Server error:', err.message);
-        alert(err.message || 'Failed to delete course.');
+        console.error('[Delete Error]: Backend rejected the deletion.');
       }
     } catch (error) {
-      console.error('[handleDeleteCourse] Network error:', error);
-      alert('Network error — could not delete course.');
+      console.error('[Delete Error]:', error);
     }
   };
 
@@ -210,12 +216,15 @@ function MainLayout() {
                           </svg>
                           <span className="truncate">{course.title}</span>
                         </Link>
-                        {/* Delete button — only visible on row hover */}
+                        {/* Delete button — hover-hidden only on devices that
+                            actually support hover (mouse/trackpad). On touch
+                            devices, `(hover: hover)` never matches, so the
+                            button stays visible at all times. */}
                         <button
                           onClick={(e) => handleDeleteCourse(course._id, e)}
                           title="Delete course"
                           aria-label={`Delete ${course.title}`}
-                          className={`opacity-0 group-hover:opacity-100 flex-shrink-0 p-1 mr-1 rounded transition-all duration-150 ${
+                          className={`opacity-100 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-100 flex-shrink-0 p-1 mr-1 rounded transition-all duration-150 ${
                             dark
                               ? 'text-slate-600 hover:text-red-400 hover:bg-red-950/50'
                               : 'text-slate-400 hover:text-red-500 hover:bg-red-50'

@@ -28,24 +28,19 @@ const CourseSchema = new Schema(
 
 // Cascade delete: when a Course is deleted via findOneAndDelete,
 // remove all associated Modules and their Lessons.
-CourseSchema.pre('findOneAndDelete', async function (next) {
-  try {
-    const course = await this.model.findOne(this.getQuery());
-    if (course) {
-      // Lazy requires to avoid circular dependency issues at module load time
-      const Module = require('./Module');
-      const Lesson = require('./Lesson');
+CourseSchema.pre('findOneAndDelete', async function () {
+  const course = await this.model.findOne(this.getFilter());
+  if (!course) return;
 
-      // Delete all lessons that belong to any module of this course
-      await Lesson.deleteMany({ module: { $in: course.modules } });
+  // Lazy requires to avoid circular dependency issues at module load time
+  const Module = require('./Module');
+  const Lesson = require('./Lesson');
 
-      // Delete all modules that belong to this course
-      await Module.deleteMany({ course: course._id });
-    }
-    next();
-  } catch (error) {
-    next(error);
-  }
+  // Delete all lessons that belong to any module of this course
+  await Lesson.deleteMany({ module: { $in: course.modules } });
+
+  // Delete all modules that belong to this course
+  await Module.deleteMany({ course: course._id });
 });
 
 module.exports = mongoose.model('Course', CourseSchema);

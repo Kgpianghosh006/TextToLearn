@@ -229,39 +229,26 @@ const getUserCourses = async (req, res) => {
 
 // DELETE /api/course/:id  (protected — requires checkJwt)
 const deleteCourse = async (req, res) => {
+  console.log('[deleteCourse] 1. Function STARTED');
   try {
     const creatorId = req.auth?.payload?.sub;
-    if (!creatorId) {
-      return res.status(401).json({ message: 'Unauthorized' });
-    }
+    console.log('[deleteCourse] 2. Auth ID:', creatorId);
 
-    const course = await Course.findById(req.params.id).populate('modules');
-    if (!course) {
-      return res.status(404).json({ message: 'Course not found.' });
-    }
+    const course = await Course.findById(req.params.id);
+    console.log('[deleteCourse] 3. Course found in DB');
 
-    // Ownership check — only the creator may delete their own course
-    if (course.creator !== creatorId) {
-      return res.status(403).json({ message: 'Forbidden: you do not own this course.' });
-    }
+    if (!course) return res.status(404).json({ message: 'Course not found.' });
+    if (course.creator !== creatorId) return res.status(403).json({ message: 'Forbidden.' });
 
-    // Cascade: collect all lesson IDs across every module
-    const lessonIds = course.modules.flatMap((m) => m.lessons ?? []);
-
-    // Delete in order: lessons → modules → course
-    if (lessonIds.length > 0) {
-      await Lesson.deleteMany({ _id: { $in: lessonIds } });
-    }
-    if (course.modules.length > 0) {
-      await Module.deleteMany({ _id: { $in: course.modules.map((m) => m._id) } });
-    }
+    // Modules and Lessons are cascade-deleted by the pre('findOneAndDelete')
+    // hook on the Course model — do not duplicate that logic here.
     await Course.findByIdAndDelete(req.params.id);
+    console.log('[deleteCourse] 4. Course and cascaded children deleted');
 
-    console.log(`[deleteCourse] Deleted course ${req.params.id} and all its children.`);
     return res.status(200).json({ message: 'Course deleted successfully.' });
   } catch (error) {
-    console.error('[courseController] deleteCourse failed:', error.message);
-    return res.status(500).json({ message: error.message });
+    console.error('[courseController] deleteCourse CRASHED AT:', error);
+    return res.status(500).json({ message: 'Internal server error while deleting course.' });
   }
 };
 
@@ -273,5 +260,3 @@ module.exports = {
   getUserCourses,
   deleteCourse,
 };
-
-

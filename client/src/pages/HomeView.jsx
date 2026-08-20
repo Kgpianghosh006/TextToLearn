@@ -110,7 +110,6 @@ function HomeView() {
         <div className="mt-16 flex items-center gap-8">
           {[
             { label: 'AI Model', value: 'Gemini 3.5 Flash Lite' },
-            { label: 'Content Types', value: '5 Blocks' },
             { label: 'Export Formats', value: 'PDF + Audio' },
           ].map((stat) => (
             <div key={stat.label} className="text-center">
