@@ -1,5 +1,7 @@
 # 🎓 TextToLearn
 
+**🚀 Live Demo:** [https://texttolearn-omega.vercel.app/](https://texttolearn-omega.vercel.app/)
+
 > **Transform any text or topic into a fully-fledged, interactive AI course in seconds.**
 
 TextToLearn is an AI-powered educational platform that generates structured courses from simple text prompts. It automatically creates modules, detailed lessons, interactive multiple-choice questions, curated YouTube video supplements, and even audio summaries. 
