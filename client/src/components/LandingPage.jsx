@@ -45,8 +45,33 @@ function LandingPage() {
   return (
     <div className="min-h-screen bg-[#0f172a] flex flex-col font-sans overflow-y-auto">
 
+      {/* Reveal animation keyframes + staggered utility classes */}
+      <style>{`
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(16px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .reveal-row {
+          opacity: 0;
+          animation: fadeInUp 0.6s ease-out forwards;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .reveal-row {
+            opacity: 1;
+            animation: none;
+            transform: none;
+          }
+        }
+      `}</style>
+
       {/*  */}
-      <header className="flex items-center justify-between px-6 sm:px-10 py-4 border-b border-slate-800">
+      <header className="reveal-row flex items-center justify-between px-6 sm:px-10 py-4 border-b border-slate-800" style={{ animationDelay: '0s' }}>
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center">
             <svg className="w-4.5 h-4.5 text-white" width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -78,27 +103,41 @@ function LandingPage() {
         <section className="w-full max-w-4xl mx-auto text-center px-6 pt-20 pb-16">
 
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 mb-8 rounded-full bg-indigo-950 border border-indigo-800 text-xs font-semibold text-indigo-300">
+          <div
+            className="reveal-row inline-flex items-center gap-2 px-3.5 py-1.5 mb-8 rounded-full bg-indigo-950 border border-indigo-800 text-xs font-semibold text-indigo-300"
+            style={{ animationDelay: '0.1s' }}
+          >
             <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
             Powered by Google Gemini AI
           </div>
 
-          {/* Headline */}
+          {/* Headline — each line reveals as its own row */}
           <h1 className="text-5xl sm:text-6xl font-extrabold text-white mb-5 leading-[1.1] tracking-tight">
-            Master Any Topic<br />
-            <span className="bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">
+            <span className="reveal-row block" style={{ animationDelay: '0.2s' }}>
+              Master Any Topic
+            </span>
+            <span
+              className="reveal-row block bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent"
+              style={{ animationDelay: '0.35s' }}
+            >
               in Minutes
             </span>
           </h1>
 
           {/* Sub-headline */}
-          <p className="text-slate-400 text-lg sm:text-xl max-w-2xl mx-auto leading-relaxed mb-10">
+          <p
+            className="reveal-row text-slate-400 text-lg sm:text-xl max-w-2xl mx-auto leading-relaxed mb-10"
+            style={{ animationDelay: '0.5s' }}
+          >
             Generate complete, structured AI courses on any subject — with modules, quizzes,
             embedded videos, and audio summaries — instantly.
           </p>
 
           {/* CTA Row */}
-          <div className="flex flex-wrap items-center justify-center gap-3 mb-16">
+          <div
+            className="reveal-row flex flex-wrap items-center justify-center gap-3 mb-16"
+            style={{ animationDelay: '0.65s' }}
+          >
             <button
               onClick={handleSignUp}
               className="px-7 py-3 text-base font-semibold text-white bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 rounded-lg shadow-lg shadow-indigo-900/50 transition-all duration-150"
@@ -117,14 +156,18 @@ function LandingPage() {
 
         {/*  */}
         <section className="w-full max-w-5xl mx-auto px-6 pb-20">
-          <p className="text-center text-[10px] font-bold uppercase tracking-widest text-slate-600 mb-6">
+          <p
+            className="reveal-row text-center text-[10px] font-bold uppercase tracking-widest text-slate-600 mb-6"
+            style={{ animationDelay: '0.8s' }}
+          >
             Everything you need to learn smarter
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {features.map((f) => (
+            {features.map((f, i) => (
               <div
                 key={f.title}
-                className="flex flex-col gap-2.5 p-5 rounded-xl border border-slate-800 bg-slate-900/50 hover:border-indigo-800 hover:bg-indigo-950/20 transition-all duration-200 group"
+                className="reveal-row flex flex-col gap-2.5 p-5 rounded-xl border border-slate-800 bg-slate-900/50 hover:border-indigo-800 hover:bg-indigo-950/20 transition-all duration-200 group"
+                style={{ animationDelay: `${0.9 + Math.floor(i / 3) * 0.15}s` }}
               >
                 <span className="text-2xl">{f.icon}</span>
                 <h3 className="text-sm font-bold text-white group-hover:text-indigo-300 transition-colors">
@@ -139,9 +182,11 @@ function LandingPage() {
         </section>
       </main>
 
-      {/*  */}
       <footer className="text-center py-5 border-t border-slate-800 text-xs text-slate-600">
-        © {new Date().getFullYear()} TextToLearn &nbsp;·&nbsp; Built for learning, powered by AI
+        © {new Date().getFullYear()} TextToLearn &nbsp;·&nbsp; Developed by{' '}
+        <a href="https://github.com/Kgpianghosh006" target='_blank' className='font-medium hover:text-slate-300 transition-colors'>
+            Avik Ghosh
+        </a>
       </footer>
     </div>
   );

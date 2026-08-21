@@ -2,7 +2,6 @@
 function CodeBlock({ block, isExportMode = false }) {
   const { language, code } = block;
 
-  // 
   if (isExportMode) {
     return (
       <div style={{ margin: '0' }}>
@@ -42,7 +41,6 @@ function CodeBlock({ block, isExportMode = false }) {
     );
   }
 
-  // 
   return (
     <div className="my-4 rounded-xl overflow-hidden border border-slate-700/50 shadow-lg shadow-black/20">
       {/* Header bar */}

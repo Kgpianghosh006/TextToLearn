@@ -119,6 +119,13 @@ function HomeView() {
           ))}
         </div>
       </div>
+
+      <footer className="text-center py-5 border-t border-slate-800 text-xs text-slate-600">
+        © {new Date().getFullYear()} TextToLearn &nbsp;·&nbsp; Developed by{' '}
+        <a href="https://github.com/Kgpianghosh006" target='_blank' className='font-medium hover:text-slate-300 transition-colors'>
+            Avik Ghosh
+        </a>
+      </footer>
     </div>
   );
 }
