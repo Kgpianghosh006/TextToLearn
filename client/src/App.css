@@ -1,7 +1,5 @@
-/* ==========================================================================
-   App.css — Legacy component CSS kept only for PDF export compatibility.
-   All interactive UI uses Tailwind classes directly on components.
-   ========================================================================== */
+/* App.css — Legacy component CSS kept only for PDF export compatibility.
+   All interactive UI uses Tailwind classes directly on components. */
 
 /* Spin keyframe (used by PDF exporters) */
 @keyframes spin {

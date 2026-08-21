@@ -1,12 +1,10 @@
-/* ==========================================================================
-   components.css — Only the CSS that can't be replaced by Tailwind:
+/* 
    - lesson-renderer layout (needed as wrapper)
    - block-heading typographic scale
    - block-paragraph prose defaults
-   All other interactive block styles are now Tailwind-native.
-   ========================================================================== */
+   All other interactive block styles are now Tailwind-native. */
 
-/* ── LessonRenderer wrapper ─────────────────────────────────────────────── */
+/*  LessonRenderer wrapper */
 .lesson-renderer {
   display: flex;
   flex-direction: column;
@@ -28,7 +26,7 @@
   font-size: 0.825rem;
 }
 
-/* ── HeadingBlock typographic hierarchy ─────────────────────────────────── */
+/* HeadingBlock typographic hierarchy */
 .block-heading {
   color: inherit;
   font-weight: 700;
@@ -44,7 +42,7 @@
 .light-mode .block-heading--h2 { border-bottom-color: #e2e8f0; }
 .light-mode .block-heading--h3 { color: #4f46e5; }
 
-/* ── ParagraphBlock ─────────────────────────────────────────────────────── */
+/* ParagraphBlock  */
 .block-paragraph {
   font-size: 1rem;
   line-height: 1.8;
@@ -52,7 +50,7 @@
   margin: 0;
 }
 
-/* ── VideoBlock (dark theme) ─────────────────────────────────────────────── */
+/* VideoBlock (dark theme) */
 .block-video {
   display: flex;
   align-items: center;
